@@ -1,0 +1,60 @@
+import requests
+from bs4 import BeautifulSoup
+import json
+
+
+def crawl_website(url, category, subcategory, geography, date_range):
+  """Crawls a website and extracts URLs based on user input.
+
+  Args:
+      url: The base URL of the website to crawl.
+      category: The primary category of content (e.g., "Medical Journal", "Blog", "News").
+      subcategory: The secondary category of content (e.g., "Orthopedic", "Gynecology").
+      geography: The geographic location of the content (e.g., "India", "US", "Europe").
+      date_range: The date range of the content (e.g., "2022", "2022-23", "Sep 22").
+
+  Returns:
+      A list of URLs that meet the user's criteria.
+  """
+
+  urls = []
+  response = requests.get(url)
+  soup = BeautifulSoup(response.content, "lxml")
+
+  # Find links based on user input (replace with your logic)
+  for link in soup.find_all("a"):
+    href = link.get("href")
+    if href and href.startswith(url):  # Check if link is within the same website
+      urls.append(href)
+
+  return urls
+
+
+def main():
+  """Gets user input and crawls the website."""
+
+  user_input = {
+      "category": input("Enter primary category: "),
+      "subcategory": input("Enter secondary category: "),
+      "geography": input("Enter geography: "),
+      "date_range": input("Enter date range: "),
+  }
+
+  # Convert user input to JSON (assuming website accepts JSON input)
+  json_data = json.dumps(user_input)
+
+  # Replace with the actual website URL that accepts the JSON data
+  base_url = "https://www.example.com/search"
+
+  urls = crawl_website(base_url, json_data, None, None, None)
+
+  # Save URLs to a CSV file (replace with your preferred output method)
+  with open("urls.csv", "w") as f:
+    for url in urls:
+      f.write(url + "\n")
+
+  print(f"Found {len(urls)} URLs. Saved to urls.csv")
+
+
+if __name__ == "__main__":
+  main()
